@@ -1,0 +1,11 @@
+<script th:fragment="scripts" xmlns:th="http://www.thymeleaf.org" >
+    $(document).on('focus', "#date", function () {
+        $(this).datepicker({
+            autoclose: true,
+            clearBtn: true
+        });
+    });
+    $(document).on('focus', "#amount", function () {
+        $('#amount').maskMoney({showSymbol:true,decimal:'.',precision:2});
+    });
+</script>

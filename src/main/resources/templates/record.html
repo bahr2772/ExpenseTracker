@@ -12,12 +12,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/css/materialize.min.css"
           th:href="@{/webjars/materializecss/0.97.7/css/materialize.min.css}" rel="stylesheet"/>
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
     <script src="\static\js\jquery.mask.js"
             th:src="@{js/jquery.mask.js}"></script>
+
+    <script src="\static\js\jquery.maskmoney.js"
+            th:src="@{js/jquery.maskmoney.js}"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
 
 </head>
 
@@ -29,24 +33,24 @@
       method="post" th:method="POST">
     <h5 class="center"> 2016 Tax Year </h5>
 
-    <div th:if="${deleted} == 'deleted'">
+    <div th:if="${deleted} == 'deleted'" th:with="deleted=${null}">
         <script>
             Materialize.toast('Expense Deleted', 2000)
         </script>
-        <div th:with="deleted=${null}"/>
     </div>
-    <div th:if="${added} == 'added'">
+    <div th:if="${added} == 'added'" th:with="added=${null}">
         <script>
             Materialize.toast('Expense Added', 2000)
         </script>
-        <div th:with="added=${null}"/>
     </div>
 
     <table class="striped centered">
         <thead>
         <tr>
             <th data-field="merchant_name">Merchant Name</th>
+            <th data-field="item">Item(s)</th>
             <th data-field="description">Description</th>
+            <th data-field="category">Category</th>
             <th data-field="amount">Amount</th>
             <th data-field="date">Date</th>
         </tr>
@@ -57,43 +61,44 @@
         <tr th:each="expense, stat : *{expenses}">
             <input type="hidden" th:field="*{expenses[__${stat.index}__].id}"/>
             <td><input type="text" th:field="*{expenses[__${stat.index}__].merchantName}"/></td>
+            <td><input type="text" th:field="*{expenses[__${stat.index}__].item}"/></td>
             <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
+            <td><input type="text"  id="autocomplete-input" class="autocomplete" th:field="*{expenses[__${stat.index}__].category}"/></td>
             <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>
             <td><input type="text" id="date" th:field="*{expenses[__${stat.index}__].date}"/></td>
             <td>
                 <button type="submit" name="deleteExpense" class="btn-floating btn-small waves-effect waves-light"
-                        th:value="${stat.index}">X<i class="mdi-content-remove"></i></button>
+                        th:value="${stat.index}"><i class="material-icons mdi-content-remove">delete</i></button>
             </td>
         </tr>
         </tbody>
     </table>
     <br/>
-    <button class=" btn waves-effect waves-light mdi-content-checkmark" type="submit" name="addExpense">Add expense</button>
+    <button class="center-align col s6 offset-s6 btn waves-effect waves-light mdi-content-checkmark" type="submit" name="addExpense">Add expense</button>
 
 </form>
 
 <script>
     $(document).on('focus', "#date", function () {
-        $(this).datepicker();
-    });
-    $(document).on('focus', "#amount", function () {
-        $(this).mask("0,000,00.##", {reverse: true});
-    });
-    dateValue = $("#date").val();
-
-    window.onload = jQuery;
-
-    jQuery(function () {
-        var shortDateFormat = 'dd/MM/yyyy';
-
-        jQuery("#date").each(function (idx, elem) {
-            if (jQuery(elem).is(":input")) {
-                jQuery(elem).val(jQuery.format.date(jQuery(elem).val(), shortDateFormat));
-            } else {
-                jQuery(elem).text(jQuery.format.date(jQuery(elem).text(), shortDateFormat));
-            }
+        $(this).datepicker({
+            autoclose: true,
+            clearBtn: true
         });
     });
+
+    $(document).on('focus', "#amount", function () {
+        $("#amount").maskMoney({decimal:'.',precision:2});
+    });
+
+
+    $('input.autocomplete').autocomplete({
+        data: {
+            "Rent": null,
+            "Office Supplies": null,
+            "Food and Entertainment": null
+        }
+    });
+
 </script>
 </body>
 </html>

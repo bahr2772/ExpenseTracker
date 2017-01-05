@@ -33,6 +33,7 @@ public class ExpenseController {
         model.addAttribute("record", record);
         model.addAttribute("added", "added");
         crud.save(record.getExpenses());
+        //save(request,record);
         return "record";
     }
 
@@ -40,8 +41,9 @@ public class ExpenseController {
     public String deleteProduct(@ModelAttribute Record record, final Model model, final HttpServletRequest request) {
 
         final Integer expenseId = Integer.valueOf(request.getParameter("deleteExpense"));
-        System.out.print(expenseId);
         Expense expense = record.getExpenses().get(expenseId);
+        System.out.println("Deleted: " + expense.toString());
+
         crud.delete(expense.getId());
         record.getExpenses().clear();
         record = getRecordContent();
@@ -79,17 +81,15 @@ public class ExpenseController {
 
                // expense.setId(Integer.parseInt(request.getParameter("expenses[" + i + "].id")));
                 expense.setMerchantName(request.getParameter("expenses[" + i + "].merchantName"));
+                expense.setItem(request.getParameter("expenses[" + i + "].item"));
                 expense.setDescription(request.getParameter("expenses[" + i + "].description"));
-
                 String value = request.getParameter("expenses[" + i + "].amount");
+                expense.setDate(request.getParameter("expenses[" + i + "].date"));
 
                 BigDecimal money = new BigDecimal(value.replaceAll(",", ""));
 
                 expense.setAmount(money);
 
-                expense.setDate(request.getParameter("expenses[" + i + "].date"));
-
-                //record.getExpenses().clear();
                 record.getExpenses().add(expense);
                 i++;
             }

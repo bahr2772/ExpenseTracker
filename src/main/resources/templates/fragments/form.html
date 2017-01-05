@@ -1,0 +1,42 @@
+<div th:fragment="inputForm" xmlns:th="http://www.thymeleaf.org" >
+
+    <form id="expense_form" action="#" th:action="@{/expenses}" th:object="${record}" method="post" th:method="POST">
+
+        <h5 class="center"> 2016 Tax Year </h5>
+
+        <table class="striped centered">
+            <thead>
+            <tr>
+                <th data-field="merchant_name">Merchant Name</th>
+                <th data-field="item">Item(s)</th>
+                <th data-field="description">Description</th>
+                <th data-field="amount">Amount</th>
+                <th data-field="date">Date</th>
+            </tr>
+            </thead>
+
+
+            <tbody>
+            <tr th:each="expense, stat : *{expenses}">
+                <input type="hidden" th:field="*{expenses[__${stat.index}__].id}"/>
+                <td><input type="text" th:field="*{expenses[__${stat.index}__].merchantName}"/></td>
+                <td><input type="text" th:field="*{expenses[__${stat.index}__].item}"/></td>
+                <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
+                <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>
+                <td><input type="text" default="01-01-2016" id="date" th:field="*{expenses[__${stat.index}__].date}"/>
+                </td>
+                <td>
+                    <button type="submit" name="deleteExpense" class="btn-floating btn-small waves-effect waves-light"
+                            th:value="${stat.index}"><i class="material-icons mdi-content-remove">delete</i></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <button class="center-align col s6 offset-s6 btn waves-effect waves-light mdi-content-checkmark" type="submit"
+                name="addExpense">Add expense
+        </button>
+
+    </form>
+</div>
+

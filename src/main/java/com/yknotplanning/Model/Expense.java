@@ -14,14 +14,22 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-
-
     private String merchantName;
     private String description;
     private BigDecimal amount;
     private String date;
+    private String item;
+    private String category;
 
     public Expense() {
+    }
+
+    public Expense(String merchantName, String description, BigDecimal amount, String date, String item) {
+        this.merchantName = merchantName;
+        this.description = description;
+        this.amount = amount;
+        this.date = date;
+        this.item = item;
     }
 
     public Expense(String merchantName, String description, BigDecimal amount, String date) {
@@ -30,6 +38,8 @@ public class Expense {
         this.amount = amount;
         this.date = date;
     }
+
+
     public String getMerchantName() {
         return merchantName;
     }
@@ -68,5 +78,33 @@ public class Expense {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getItem() {
+        return item;
+    }
+
+    @Override
+    public String toString() {
+        return "Expense{" +
+                "id=" + id +
+                ", merchantName='" + merchantName + '\'' +
+                ", description='" + description + '\'' +
+                ", amount=" + amount +
+                ", date='" + date + '\'' +
+                ", item='" + item + '\'' +
+                ", category='" + category + '\'' +
+                '}';
+    }
+
+    public void setItem(String item) {
+        this.item = item;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

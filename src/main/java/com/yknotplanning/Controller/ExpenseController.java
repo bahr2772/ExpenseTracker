@@ -35,7 +35,7 @@ public class ExpenseController {
         else
             record = getRecordContentByMonth(month, model);
 
-        getContent(model);
+        getContent(model,Helper.rNull(month));
         model.addAttribute("month", Helper.rNull(month));
         model.addAttribute("monthLabel", Helper.getMonthName(Helper.rNull((month))));
         model.addAttribute("record", record);
@@ -43,10 +43,10 @@ public class ExpenseController {
     }
 
     @RequestMapping(value = "expenses", params = {"addExpense"})
-    public String addProduct(@ModelAttribute Record record, final Model model, HttpServletRequest request) {
+    public String addProduct(@ModelAttribute Record record, final Model model, HttpServletRequest request, String month) {
         record.getExpenses().add(new Expense());
         System.out.println(record.getExpenses().get(record.getExpenses().size()-1));
-        getContent(model);
+        getContent(model, Helper.rNull(month));
         model.addAttribute("record", record);
         model.addAttribute("added", "added");
         crud.save(record.getExpenses());
@@ -96,13 +96,13 @@ public class ExpenseController {
         return record;
     }
 
-    public void getContent(Model model) {
+    public void getContent(Model model, String month) {
         ArrayList<String> mechNames = new ArrayList<String>();
         ArrayList<String> items = new ArrayList<String>();
         ArrayList<String> cats = new ArrayList<String>();
         BigDecimal total = new BigDecimal(0.00);
 
-        for (Expense expense : crud.findAll()) {
+        for (Expense expense : crud.findByDateStartingWith(month)) {
             mechNames.add(expense.getMerchantName());
             items.add(expense.getItem());
             cats.add(expense.getCategory());

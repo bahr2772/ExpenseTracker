@@ -5,9 +5,6 @@
             clearBtn: true
         });
     });
-    $(document).on('focus', "#amount", function () {
-        $('#amount').maskMoney({showSymbol:true,decimal:'.',precision:2});
-    });
 
     $(document).on('focus', "#category", function () {
         $('input.autocomplete').autocomplete({

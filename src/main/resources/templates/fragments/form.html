@@ -5,6 +5,8 @@
           action="#" th:action="@{/expenses}"
           th:object="${record}"
           method="post">
+        <input type="hidden" name="month" th:value="${month}"/>
+
         <h5 class="center"> 2016 Tax Year </h5>
         <h2 class="center-align" th:text="${monthLabel}"/>
 
@@ -19,9 +21,10 @@
             </script>
         </div>
 
-        <table class="striped centered">
+        <table id="expenseTable" class="striped centered">
             <thead>
             <tr>
+                <th>  #  </th>
                 <th data-field="merchant_name">Merchant Name</th>
                 <th data-field="item">Item(s)</th>
                 <th data-field="description">Description</th>
@@ -31,18 +34,17 @@
             </tr>
             </thead>
 
-
             <tbody>
             <th:block th:each="expense, stat : *{expenses}">
                 <tr>
                     <input type="hidden" th:field="*{expenses[__${stat.index}__].id}"/>
-                    <td><input type="text" id="merchantName" th:field="*{expenses[__${stat.index}__].merchantName}"/>
-                    </td>
-                    <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/></td>
-                    <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
-                    <td><input type="text" id="cats" th:field="*{expenses[__${stat.index}__].category}"/></td>
+                    <td th:text="'  ' + ${stat.index} + '  '"/>
+                    <td><input type="text" id="merchantName" th:field="*{expenses[__${stat.index}__].merchantName}"/> </td>
+                    <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/> </td>
+                    <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/> </td>
+                    <td><input type="text" id="cats" th:field="*{expenses[__${stat.index}__].category}" /></td>
                     <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>
-                    <td><input type="text" id="date" th:field="*{expenses[__${stat.index}__].date}"/></td>
+                    <td><input type="text" id="date" th:field="*{expenses[__${stat.index}__].date}" /></td>
                     <td>
                         <button type="submit" name="deleteExpense"
                                 class="btn-floating btn-small waves-effect waves-light"
@@ -58,12 +60,18 @@
                 name="addExpense">Add expense
         </button>
 
-        <button class="center-align col s6 offset-s6 btn waves-effect  red lighten-2 waves-light mdi-content-checkmark" type="submit"
+        <button class="center-align col s6 offset-s6 btn waves-effect  red lighten-2 waves-light mdi-content-checkmark"
+                type="submit"
                 name="saveList">Save Expenses
         </button>
-        <h6 th:text="'Total: $' + ${total}"></h6>
+        <button th:attr="class=${total &lt; 0 ?
+        'red lighten-2 center-align col s6 offset-s6 btn waves-effect right waves-light' :
+         'green lighten-2 center-align col s6 offset-s6 btn waves-effect right waves-light'}"
+                th:text="'Total: $' + ${total}">
+        </button>
 
     </form>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-2.2.4/dt-1.10.13/af-2.1.3/b-1.2.4/b-html5-1.2.4/r-2.1.0/se-1.2.0/datatables.min.js"></script>
 
     <script type="text/javascript" th:inline="javascript">
 
@@ -71,27 +79,25 @@
         var availableItems = /*[[${itemList}]]*/ ['one_to_test', 'two_to_test'];
         var availableCats = /*[[${cats}]]*/ ['one_to_test', 'two_to_test'];
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-            $(document).on('change', "#merchantName", function () {
+            $("#merchantName").on('focus', 'input', function () {
                 $("#merchantName").autocomplete({
                     source: availableTags
                 });
             });
 
-            $(document).on('change', "#items", function () {
+            $(document).on('focus', "#items", function () {
                 $("#items").autocomplete({
                     source: availableItems
                 });
             });
-            $(document).on('change', "#cats", function () {
+            $(document).on('focus', "#cats", function () {
                 $("#cats").autocomplete({
                     source: availableCats
                 });
             });
         });
-
     </script>
-
 
 </div>

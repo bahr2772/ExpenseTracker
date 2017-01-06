@@ -1,20 +1,19 @@
 <div th:fragment="popovers" xmlns:th="http://www.thymeleaf.org" >
-    <div th:if="${deleted} == 'deleted'">
+    <div th:if="${deleted} == 'deleted'" th:remove="deleted">
         <script>
             Materialize.toast('Expense Deleted', 2000)
         </script>
         <div th:with="deleted=${null}"/>
     </div>
-    <div th:if="${added} == 'added'">
+    <div th:if="${added} == 'added'" th:remove="added">
         <script>
             Materialize.toast('Expense Added', 2000)
         </script>
         <div th:with="added=${null}"/>
     </div>
-    <div th:if="${save} == 'save'">
+    <div th:if="${save} == 'save'" th:remove="save">
         <script>
             Materialize.toast('Expenses Saved', 2000)
         </script>
-        <div th:with="added=${null}"/>
     </div>
 </div>

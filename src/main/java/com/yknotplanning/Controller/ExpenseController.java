@@ -25,19 +25,19 @@ public class ExpenseController {
 
 
     @RequestMapping(value = "expenses", method = RequestMethod.GET)
-    public String getExpensesList(final Model model, HttpServletRequest request) {
+    public String getExpensesList(final Model model, HttpServletRequest request, String month) {
 
-        String month = Helper.rNull(request.getParameter("month"));
+        //String month = Helper.rNull(request.getParameter("month"));
 
         Record record;
-        if (month.equals(""))
+        if (Helper.rNull(month).equals(""))
             record = getRecordContent(model);
         else
             record = getRecordContentByMonth(month, model);
 
         getContent(model);
-        model.addAttribute("month", month);
-        model.addAttribute("monthLabel", Helper.getMonthName(month));
+        model.addAttribute("month", Helper.rNull(month));
+        model.addAttribute("monthLabel", Helper.getMonthName(Helper.rNull((month))));
         model.addAttribute("record", record);
         return "record";
     }
@@ -45,7 +45,7 @@ public class ExpenseController {
     @RequestMapping(value = "expenses", params = {"addExpense"})
     public String addProduct(@ModelAttribute Record record, final Model model, HttpServletRequest request) {
         record.getExpenses().add(new Expense());
-
+        System.out.println(record.getExpenses().get(record.getExpenses().size()-1));
         getContent(model);
         model.addAttribute("record", record);
         model.addAttribute("added", "added");
@@ -100,13 +100,16 @@ public class ExpenseController {
         ArrayList<String> mechNames = new ArrayList<String>();
         ArrayList<String> items = new ArrayList<String>();
         ArrayList<String> cats = new ArrayList<String>();
+        BigDecimal total = new BigDecimal(0.00);
 
         for (Expense expense : crud.findAll()) {
             mechNames.add(expense.getMerchantName());
             items.add(expense.getItem());
             cats.add(expense.getCategory());
+            total = total.add(expense.getAmount());
         }
 
+        model.addAttribute("total", total);
         model.addAttribute("mechNames", mechNames);
         model.addAttribute("itemList", items);
         model.addAttribute("cats", cats);

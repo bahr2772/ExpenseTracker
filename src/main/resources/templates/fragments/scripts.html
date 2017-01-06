@@ -1,4 +1,4 @@
-<script th:fragment="scripts" xmlns:th="http://www.thymeleaf.org" >
+<script th:fragment="scripts" xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
     $(document).on('focus', "#date", function () {
         $(this).datepicker({
             autoclose: true,
@@ -8,4 +8,15 @@
     $(document).on('focus', "#amount", function () {
         $('#amount').maskMoney({showSymbol:true,decimal:'.',precision:2});
     });
+
+    $(document).on('focus', "#category", function () {
+        $('input.autocomplete').autocomplete({
+            data: {
+                "Rent": "Rent",
+                "Office Supplies": null,
+                "Food and Entertainment": null
+            }
+        });
+    });
+
 </script>

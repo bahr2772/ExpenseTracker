@@ -15,4 +15,8 @@ public interface CRUD extends CrudRepository<Expense, Integer> {
 
     public List<Expense> findAll();
 
+    public List<Expense> findByDateStartingWith(String date);
+
+
+
 }

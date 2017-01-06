@@ -1,8 +1,23 @@
-<div th:fragment="inputForm" xmlns:th="http://www.thymeleaf.org" >
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="inputForm">
 
-    <form id="expense_form" action="#" th:action="@{/expenses}" th:object="${record}" method="post" th:method="POST">
-
+    <form id="expense_form"
+          th:method="post"
+          action="#" th:action="@{/expenses}"
+          th:object="${record}"
+          method="post">
         <h5 class="center"> 2016 Tax Year </h5>
+        <h2 class="center-align" th:text="${monthLabel}"/>
+
+        <div th:if="${deleted} == 'deleted'" th:with="deleted=${null}">
+            <script>
+                Materialize.toast('Expense Deleted', 2000)
+            </script>
+        </div>
+        <div th:if="${added} == 'added'" th:with="added=${null}">
+            <script>
+                Materialize.toast('Expense Added', 2000)
+            </script>
+        </div>
 
         <table class="striped centered">
             <thead>
@@ -10,6 +25,7 @@
                 <th data-field="merchant_name">Merchant Name</th>
                 <th data-field="item">Item(s)</th>
                 <th data-field="description">Description</th>
+                <th data-field="category">Category</th>
                 <th data-field="amount">Amount</th>
                 <th data-field="date">Date</th>
             </tr>
@@ -17,19 +33,24 @@
 
 
             <tbody>
-            <tr th:each="expense, stat : *{expenses}">
-                <input type="hidden" th:field="*{expenses[__${stat.index}__].id}"/>
-                <td><input type="text" th:field="*{expenses[__${stat.index}__].merchantName}"/></td>
-                <td><input type="text" th:field="*{expenses[__${stat.index}__].item}"/></td>
-                <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
-                <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>
-                <td><input type="text" default="01-01-2016" id="date" th:field="*{expenses[__${stat.index}__].date}"/>
-                </td>
-                <td>
-                    <button type="submit" name="deleteExpense" class="btn-floating btn-small waves-effect waves-light"
-                            th:value="${stat.index}"><i class="material-icons mdi-content-remove">delete</i></button>
-                </td>
-            </tr>
+            <th:block th:each="expense, stat : *{expenses}">
+                <tr>
+                    <input type="hidden" th:field="*{expenses[__${stat.index}__].id}"/>
+                    <td><input type="text" id="merchantName" th:field="*{expenses[__${stat.index}__].merchantName}"/>
+                    </td>
+                    <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/></td>
+                    <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
+                    <td><input type="text" id="cats" th:field="*{expenses[__${stat.index}__].category}"/></td>
+                    <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>
+                    <td><input type="text" id="date" th:field="*{expenses[__${stat.index}__].date}"/></td>
+                    <td>
+                        <button type="submit" name="deleteExpense"
+                                class="btn-floating btn-small waves-effect waves-light"
+                                th:value="${stat.index}"><i class="material-icons mdi-content-remove">delete</i>
+                        </button>
+                    </td>
+                </tr>
+            </th:block>
             </tbody>
         </table>
         <br/>
@@ -37,6 +58,37 @@
                 name="addExpense">Add expense
         </button>
 
-    </form>
-</div>
+        <h6 th:text="'Total: ' + ${total}"></h6>
 
+    </form>
+
+    <script type="text/javascript" th:inline="javascript">
+
+        var availableTags = /*[[${mechNames}]]*/ ['one_to_test', 'two_to_test'];
+        var availableItems = /*[[${itemList}]]*/ ['one_to_test', 'two_to_test'];
+        var availableCats = /*[[${cats}]]*/ ['one_to_test', 'two_to_test'];
+
+        $(document).ready(function() {
+
+            $(document).on('change', "#merchantName", function () {
+                $("#merchantName").autocomplete({
+                    source: availableTags
+                });
+            });
+
+            $(document).on('change', "#items", function () {
+                $("#items").autocomplete({
+                    source: availableItems
+                });
+            });
+            $(document).on('change', "#cats", function () {
+                $("#cats").autocomplete({
+                    source: availableCats
+                });
+            });
+        });
+
+    </script>
+
+
+</div>

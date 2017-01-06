@@ -68,10 +68,11 @@ public class ExpenseController {
 
     @RequestMapping(value = "expenses", params = {"saveList"})
     public String saveList(@ModelAttribute Record record, final Model model, final HttpServletRequest request) {
+      String month = Helper.rNull(request.getParameter("month"));
         crud.save(record.getExpenses());
-        model.addAttribute("added", "added");
+        model.addAttribute("save", "save");
         model.addAttribute("record", record);
-        return "record";
+        return "redirect:/expenses?month=" + month;
     }
 
     public Record getRecordContent(Model model) {

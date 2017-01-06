@@ -11,4 +11,10 @@
         </script>
         <div th:with="added=${null}"/>
     </div>
+    <div th:if="${save} == 'save'">
+        <script>
+            Materialize.toast('Expenses Saved', 2000)
+        </script>
+        <div th:with="added=${null}"/>
+    </div>
 </div>

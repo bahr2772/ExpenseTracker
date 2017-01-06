@@ -16,7 +16,7 @@ public class Expense {
 
     private String merchantName;
     private String description;
-    private BigDecimal amount;
+    private BigDecimal amount = new BigDecimal(0.00);
     private String date;
     private String item;
     private String category;

@@ -58,7 +58,10 @@
                 name="addExpense">Add expense
         </button>
 
-        <h6 th:text="'Total: ' + ${total}"></h6>
+        <button class="center-align col s6 offset-s6 btn waves-effect waves-light mdi-content-checkmark" type="submit"
+                name="saveList">Save Expenses
+        </button>
+        <h6 th:text="'Total: $' + ${total}"></h6>
 
     </form>
 

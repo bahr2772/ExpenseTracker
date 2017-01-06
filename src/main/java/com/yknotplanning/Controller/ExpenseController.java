@@ -10,20 +10,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-
+@SessionAttributes("month")
 @Controller
 public class ExpenseController {
 
     @Autowired
     private CRUD crud;
 
+
     @RequestMapping(value = "expenses", method = RequestMethod.GET)
     public String getExpensesList(final Model model, HttpServletRequest request) {
+
         String month = Helper.rNull(request.getParameter("month"));
 
         Record record;
@@ -33,6 +36,7 @@ public class ExpenseController {
             record = getRecordContentByMonth(month, model);
 
         getContent(model);
+        model.addAttribute("month", month);
         model.addAttribute("monthLabel", Helper.getMonthName(month));
         model.addAttribute("record", record);
         return "record";
@@ -68,10 +72,13 @@ public class ExpenseController {
 
     @RequestMapping(value = "expenses", params = {"saveList"})
     public String saveList(@ModelAttribute Record record, final Model model, final HttpServletRequest request) {
-      String month = Helper.rNull(request.getParameter("month"));
+        String month = Helper.rNull(request.getParameter("month"));
         crud.save(record.getExpenses());
         model.addAttribute("save", "save");
         model.addAttribute("record", record);
+
+        System.out.println(month);
+        model.addAttribute("month", month);
         return "redirect:/expenses?month=" + month;
     }
 
@@ -116,7 +123,6 @@ public class ExpenseController {
         model.addAttribute("total", total);
         return record;
     }
-
 
 
 }

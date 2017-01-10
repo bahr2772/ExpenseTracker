@@ -99,6 +99,7 @@ public class ExpenseController {
 
         System.out.println(month);
         model.addAttribute("month", month);
+        model.addAttribute("save", "savegit ");
         return "redirect:/expenses?month=" + month;
     }
 

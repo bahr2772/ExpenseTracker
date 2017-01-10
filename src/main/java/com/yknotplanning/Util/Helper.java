@@ -32,7 +32,7 @@ public class Helper {
 
     public static String rNull(String string){
         if(string == null)
-            return "";
+            return " ";
         else return string;
     }
 

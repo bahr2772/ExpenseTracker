@@ -2,7 +2,7 @@ package com.yknotplanning.Controller;
 
 import com.yknotplanning.Model.Expense;
 import com.yknotplanning.Model.Record;
-import com.yknotplanning.Repo.CRUD;
+import com.yknotplanning.Repo.ExpenseRepo;
 import com.yknotplanning.Util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,21 +21,24 @@ import java.util.ArrayList;
 public class ExpenseController {
 
     @Autowired
-    private CRUD crud;
+    private ExpenseRepo expenseRepo;
 
 
     @RequestMapping(value = "expenses", method = RequestMethod.GET)
-    public String getExpensesList(final Model model, HttpServletRequest request, String month) {
+    public String getExpensesList(final Model model, HttpServletRequest request, String month, String orderBy) {
 
-        //String month = Helper.rNull(request.getParameter("month"));
+        month = Helper.rNull(month);
+        orderBy = Helper.rNull(orderBy);
 
-        Record record;
-        if (Helper.rNull(month).equals(""))
-            record = getRecordContent(model);
-        else
-            record = getRecordContentByMonth(month, model);
+      /*  if (month == null)
+            month = "0";
+        if (orderBy == null)
+            orderBy = "id DESC";*/
 
-        getContent(model,Helper.rNull(month));
+        String[] args = {month,orderBy};
+        Record record = getContent(model,args);
+
+
         model.addAttribute("month", Helper.rNull(month));
         model.addAttribute("monthLabel", Helper.getMonthName(Helper.rNull((month))));
         model.addAttribute("record", record);
@@ -43,27 +46,33 @@ public class ExpenseController {
     }
 
     @RequestMapping(value = "expenses", params = {"addExpense"})
-    public String addProduct(@ModelAttribute Record record, final Model model, HttpServletRequest request, String month) {
-        record.getExpenses().add(new Expense());
-        System.out.println(record.getExpenses().get(record.getExpenses().size()-1));
-        getContent(model, Helper.rNull(month));
+    public String addProduct(@ModelAttribute Record record, final Model model, HttpServletRequest request, String month, String orderBy) {
+        month = Helper.rNull(month);
+        orderBy = Helper.rNull(orderBy);
+
+        String[] args = {month,orderBy};
+        expenseRepo.create();
+        expenseRepo.save(record.getExpenses());
+        record = getContent(model, args);
         model.addAttribute("record", record);
         model.addAttribute("added", "added");
-        crud.save(record.getExpenses());
-        //save(request,record);
         return "record";
     }
 
     @RequestMapping(value = "expenses", params = {"deleteExpense"})
-    public String deleteProduct(@ModelAttribute Record record, final Model model, final HttpServletRequest request) {
+    public String deleteProduct(@ModelAttribute Record record, final Model model, final HttpServletRequest request, String month, String orderBy) {
+        month = Helper.rNull(month);
+        orderBy = Helper.rNull(orderBy);
+
+        String[] args = {month,orderBy};
 
         final Integer expenseId = Integer.valueOf(request.getParameter("deleteExpense"));
         Expense expense = record.getExpenses().get(expenseId);
         System.out.println("Deleted: " + expense.toString());
 
-        crud.delete(expense.getId());
+        expenseRepo.delete(expense.getId());
         record.getExpenses().clear();
-        record = getRecordContent(model);
+        record = getContent(model,args);
         model.addAttribute("record", record);
         model.addAttribute("deleted", "deleted");
 
@@ -73,7 +82,7 @@ public class ExpenseController {
     @RequestMapping(value = "expenses", params = {"saveList"})
     public String saveList(@ModelAttribute Record record, final Model model, final HttpServletRequest request) {
         String month = Helper.rNull(request.getParameter("month"));
-        crud.save(record.getExpenses());
+        expenseRepo.save(record.getExpenses());
         model.addAttribute("save", "save");
         model.addAttribute("record", record);
 
@@ -82,50 +91,31 @@ public class ExpenseController {
         return "redirect:/expenses?month=" + month;
     }
 
-    public Record getRecordContent(Model model) {
+
+    public Record getContent(Model model, String[] args) {
         Record record = new Record();
-        BigDecimal total = new BigDecimal(0.00);
 
-        for (Expense expense : crud.findAll()) {
-            record.getExpenses().add(expense);
-            total = total.add(expense.getAmount());
-
-        }
-        model.addAttribute("total", total);
-
-        return record;
-    }
-
-    public void getContent(Model model, String month) {
-        ArrayList<String> mechNames = new ArrayList<String>();
+        ArrayList<String> merchNames = new ArrayList<String>();
         ArrayList<String> items = new ArrayList<String>();
         ArrayList<String> cats = new ArrayList<String>();
         BigDecimal total = new BigDecimal(0.00);
 
-        for (Expense expense : crud.findByDateStartingWith(month)) {
-            mechNames.add(expense.getMerchantName());
+        for (Expense expense : expenseRepo.findByDateStartingWith(args[0],args[1])) {
+            record.getExpenses().add(expense);
+            merchNames.add(expense.getMerchantName());
             items.add(expense.getItem());
             cats.add(expense.getCategory());
             total = total.add(expense.getAmount());
         }
 
         model.addAttribute("total", total);
-        model.addAttribute("mechNames", mechNames);
+        model.addAttribute("merchNames", merchNames);
         model.addAttribute("itemList", items);
         model.addAttribute("cats", cats);
-    }
 
-
-    public Record getRecordContentByMonth(String month, Model model) {
-        Record record = new Record();
-        BigDecimal total = new BigDecimal(0.00);
-        for (Expense expense : crud.findByDateStartingWith(month)) {
-            record.getExpenses().add(expense);
-            total = total.add(expense.getAmount());
-        }
-        model.addAttribute("total", total);
         return record;
     }
+
 
 
 }

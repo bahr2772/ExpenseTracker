@@ -31,12 +31,11 @@ public class ExpenseRepoImpl implements ExpenseRepo {
 
     @Override
     public List<Expense> findByDateStartingWith(String purchaseDate, String orderBy) {
-        String sql = "SELECT * FROM expense WHERE purchaseDate like :purchaseDate ORDER BY :orderBy";
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("purchaseDate", purchaseDate+"%");
         params.put("orderBy", orderBy);
 
-        return namedParameterJdbcTemplate.query(sql,params,new ExpenseRowMapper());
+        return namedParameterJdbcTemplate.query(CONSTANTS.FIND_ALL_BY_MONTH,params,new ExpenseRowMapper());
     }
 
     @Override

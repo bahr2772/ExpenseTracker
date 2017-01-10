@@ -6,7 +6,7 @@
           th:object="${record}"
           method="post">
         <input type="hidden" name="month" th:value="${month}"/>
-
+        <input type="hidden" name="year" value="2016"/>
         <h5 class="center"> 2016 Tax Year </h5>
         <h2 class="center-align" th:text="${monthLabel}"/>
 
@@ -25,7 +25,7 @@
             <thead>
             <tr>
                 <th> #</th>
-                <th data-field="merchant_name"><a href="#?orderBy=merchant_name">Merchant Name</a></th>
+                <th data-field="merchant_name"><a th:href="@{/expenses(month=${month},orderBy=merchant_name)}">Merchant Name</a></th>
                 <th data-field="item">Item(s)</th>
                 <th data-field="description">Description</th>
                 <th data-field="category">Category</th>
@@ -43,7 +43,14 @@
                     </td>
                     <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/></td>
                     <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
-                    <td><input type="text" id="cats" th:field="*{expenses[__${stat.index}__].category}"/></td>
+                    <td th:object="${cats}">
+                        <select class="form-control" id="testOrder" name="testOrder">
+                            <option value="">Select Test Order</option>
+                            <option th:each="cat : ${cats}"
+                                    th:value="${cat}"
+                                    th:text="${cat}"></option>
+                        </select>
+                    </td>
                     <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>
                     <td><input type="text" id="date" th:field="*{expenses[__${stat.index}__].date}"/></td>
                     <td>

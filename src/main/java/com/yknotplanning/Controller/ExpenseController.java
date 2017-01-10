@@ -2,7 +2,9 @@ package com.yknotplanning.Controller;
 
 import com.yknotplanning.Model.Expense;
 import com.yknotplanning.Model.Record;
+import com.yknotplanning.Model.Webcontent;
 import com.yknotplanning.Repo.ExpenseRepo;
+import com.yknotplanning.Repo.WebsiteContent;
 import com.yknotplanning.Util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.text.Collator;
+import java.util.*;
 
 @SessionAttributes("month")
 @Controller
@@ -23,6 +26,8 @@ public class ExpenseController {
     @Autowired
     private ExpenseRepo expenseRepo;
 
+    @Autowired
+    private WebsiteContent websiteContent;
 
     @RequestMapping(value = "expenses", method = RequestMethod.GET)
     public String getExpensesList(final Model model, HttpServletRequest request, String month, String orderBy) {
@@ -46,17 +51,23 @@ public class ExpenseController {
     }
 
     @RequestMapping(value = "expenses", params = {"addExpense"})
-    public String addProduct(@ModelAttribute Record record, final Model model, HttpServletRequest request, String month, String orderBy) {
+    public String addProduct(@ModelAttribute Record record, final Model model, HttpServletRequest request, String month, String year, String orderBy) {
         month = Helper.rNull(month);
         orderBy = Helper.rNull(orderBy);
+        year = Helper.rNull(year);
 
         String[] args = {month,orderBy};
         expenseRepo.create();
+        Expense expense = new Expense();
+            expense.setDate(month + "/01/" + year);
+            expense.setAmount(new BigDecimal(0.00));
+
+        record.getExpenses().add(expense);
         expenseRepo.save(record.getExpenses());
         record = getContent(model, args);
         model.addAttribute("record", record);
         model.addAttribute("added", "added");
-        return "record";
+        return "redirect:/expenses?month="+month+"&orderBy="+orderBy;
     }
 
     @RequestMapping(value = "expenses", params = {"deleteExpense"})
@@ -97,14 +108,16 @@ public class ExpenseController {
 
         ArrayList<String> merchNames = new ArrayList<String>();
         ArrayList<String> items = new ArrayList<String>();
-        ArrayList<String> cats = new ArrayList<String>();
         BigDecimal total = new BigDecimal(0.00);
 
-        for (Expense expense : expenseRepo.findByDateStartingWith(args[0],args[1])) {
+        List<Expense> expenseList = expenseRepo.findByDateStartingWith(args[0], args[1]);
+        List<Webcontent> cats = websiteContent.getContentByProp("category");
+
+
+        for (Expense expense : expenseList ) {
             record.getExpenses().add(expense);
             merchNames.add(expense.getMerchantName());
             items.add(expense.getItem());
-            cats.add(expense.getCategory());
             total = total.add(expense.getAmount());
         }
 

@@ -11,4 +11,9 @@ public class CONSTANTS {
     public static final String UPDATE_EXPENSE = "UPDATE expense SET merchant_name=?, description=?, category=?, amount=?, purchaseDate=?, item=? WHERE id=?";
     public static final String INSERT_EXPENSE = "INSERT INTO expense (merchant_name, description, category, amount, purchaseDate, item) VALUES (?,?,?,?,?,?)";
     public static final String REMOVE_EXPENSE = "DELETE FROM expense WHERE id=?";
+
+    public static final String GET_ALL_WEBCONTENT = "SELECT * FROM webContent";
+    public static final String GET_ALL_BY_PROP = "SELECT * FROM webContent WHERE property =?";
+    public static final String UPDATE_WEBCONTENT = "INSERT INTO webContent (property, value) VALUES (?,?)";
+
 }

@@ -1,4 +1,16 @@
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="inputForm">
+<style>
+    select {
+        background-color: transparent;
+        width: 100%;
+        padding: 5px;
+        border: none;
+        border-radius: 2px;
+        height: 3rem;
+        border-bottom: 1px solid black;
+        margin-bottom: 18px;
+    }
+</style>
     <div th:if="${orderBy == null}" th:with="orderBy = ${id}"/>
     <form id="expense_form"
           th:method="post"
@@ -38,17 +50,18 @@
             <th:block th:each="expense, stat : *{expenses}">
                 <tr>
                     <input type="hidden" th:field="*{expenses[__${stat.index}__].id}"/>
-                    <td th:text="'  ' + ${stat.index} + '  '"/>
+                    <td th:text="'  ' + ${stat.index+1} + '  '"/>
                     <td><input type="text" id="merchantName" th:field="*{expenses[__${stat.index}__].merchantName}"/>
                     </td>
                     <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/></td>
                     <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
-                    <td th:object="${cats}">
-                        <select class="form-control" id="testOrder" name="testOrder">
-                            <option value="">Select Test Order</option>
-                            <option th:each="cat : ${cats}"
-                                    th:value="${cat}"
-                                    th:text="${cat}"></option>
+                    <td>
+                        <select name="category" style="display: inherit;" class="form-control" th:field="*{expenses[__${stat.index}__].category}">
+                            <option value="">Select Category</option>
+                            <th:block th:each="cat, iterationStatus : ${cats}" th:inline="text">
+                                <option th:value="${cat.value}">[[${cat.value}]]</option>
+                            </th:block>
+
                         </select>
                     </td>
                     <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>

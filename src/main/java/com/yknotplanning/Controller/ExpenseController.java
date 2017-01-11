@@ -6,6 +6,8 @@ import com.yknotplanning.Model.Webcontent;
 import com.yknotplanning.Repo.ExpenseRepo;
 import com.yknotplanning.Repo.WebsiteContent;
 import com.yknotplanning.Util.Helper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.text.Collator;
 import java.util.*;
 
 @SessionAttributes("month")
@@ -28,17 +29,20 @@ public class ExpenseController {
 
     @Autowired
     private WebsiteContent websiteContent;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "expenses", method = RequestMethod.GET)
     public String getExpensesList(final Model model, HttpServletRequest request, String month, String orderBy) {
+        logger.debug("This is a debug message");
+        logger.info("This is an info message");
+        logger.warn("This is a warn message");
+        logger.error("This is an error message");
 
-        month = Helper.rNull(month);
-        orderBy = Helper.rNull(orderBy);
 
-      /*  if (month == null)
+        if (month == null)
             month = "0";
         if (orderBy == null)
-            orderBy = "id DESC";*/
+            orderBy = "id DESC";
 
         String[] args = {month,orderBy};
         Record record = getContent(model,args);
@@ -99,7 +103,7 @@ public class ExpenseController {
 
         System.out.println(month);
         model.addAttribute("month", month);
-        model.addAttribute("save", "savegit ");
+        model.addAttribute("save", "save");
         return "redirect:/expenses?month=" + month;
     }
 

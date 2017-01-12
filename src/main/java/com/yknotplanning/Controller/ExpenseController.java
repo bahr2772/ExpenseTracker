@@ -1,5 +1,6 @@
 package com.yknotplanning.Controller;
 
+import com.yknotplanning.Model.CONSTANTS;
 import com.yknotplanning.Model.Expense;
 import com.yknotplanning.Model.Record;
 import com.yknotplanning.Model.Webcontent;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @SessionAttributes("month")
 @Controller
@@ -33,11 +35,6 @@ public class ExpenseController {
 
     @RequestMapping(value = "expenses", method = RequestMethod.GET)
     public String getExpensesList(final Model model, HttpServletRequest request, String month, String orderBy) {
-        logger.debug("This is a debug message");
-        logger.info("This is an info message");
-        logger.warn("This is a warn message");
-        logger.error("This is an error message");
-
 
         if (month == null)
             month = "0";
@@ -46,7 +43,6 @@ public class ExpenseController {
 
         String[] args = {month,orderBy};
         Record record = getContent(model,args);
-
 
         model.addAttribute("month", Helper.rNull(month));
         model.addAttribute("monthLabel", Helper.getMonthName(Helper.rNull((month))));
@@ -63,6 +59,7 @@ public class ExpenseController {
         String[] args = {month,orderBy};
         expenseRepo.create();
         Expense expense = new Expense();
+            expense.setCategory("");
             expense.setDate(month + "/01/" + year);
             expense.setAmount(new BigDecimal(0.00));
 
@@ -101,11 +98,13 @@ public class ExpenseController {
         model.addAttribute("save", "save");
         model.addAttribute("record", record);
 
-        System.out.println(month);
         model.addAttribute("month", month);
         model.addAttribute("save", "save");
         return "redirect:/expenses?month=" + month;
     }
+
+
+
 
 
     public Record getContent(Model model, String[] args) {
@@ -114,17 +113,33 @@ public class ExpenseController {
         ArrayList<String> merchNames = new ArrayList<String>();
         ArrayList<String> items = new ArrayList<String>();
         BigDecimal total = new BigDecimal(0.00);
-
-        List<Expense> expenseList = expenseRepo.findByDateStartingWith(args[0], args[1]);
         List<Webcontent> cats = websiteContent.getContentByProp("category");
 
+        List<Expense> expenseList = expenseRepo.findByDateStartingWith(args[0], args[1]);
+
+        ArrayList<String> tmpCat = new ArrayList<>();
+        for(Webcontent cat : cats) {
+            tmpCat.add(cat.getValue());
+        }
 
         for (Expense expense : expenseList ) {
             record.getExpenses().add(expense);
             merchNames.add(expense.getMerchantName());
             items.add(expense.getItem());
             total = total.add(expense.getAmount());
+            if (tmpCat.contains(Helper.rNull(expense.getCategory())))
+                System.out.println("TRUE");
+            else
+                websiteContent.saveContent(CONSTANTS.CATEGORY, Helper.rNull(expense.getCategory()));
         }
+
+
+
+
+
+
+         cats = websiteContent.getContentByProp("category");
+
 
         model.addAttribute("total", total);
         model.addAttribute("merchNames", merchNames);

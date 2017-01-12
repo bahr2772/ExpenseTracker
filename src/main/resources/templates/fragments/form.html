@@ -41,6 +41,7 @@
                 <th data-field="item">Item(s)</th>
                 <th data-field="description">Description</th>
                 <th data-field="category">Category</th>
+                <th></th>
                 <th data-field="amount">Amount</th>
                 <th data-field="date">Date</th>
             </tr>
@@ -56,12 +57,11 @@
                     <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/></td>
                     <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
                     <td>
-                        <select name="category" style="display: inherit;" class="form-control" th:field="*{expenses[__${stat.index}__].category}">
+                        <select  name="category" style="display: inherit;" class="form-control cats" th:field="*{expenses[__${stat.index}__].category}">
                             <option value="">Select Category</option>
                             <th:block th:each="cat, iterationStatus : ${cats}" th:inline="text">
                                 <option th:value="${cat.value}">[[${cat.value}]]</option>
                             </th:block>
-
                         </select>
                     </td>
                     <td><input type="text" id="amount" th:field="*{expenses[__${stat.index}__].amount}"/></td>
@@ -93,6 +93,7 @@
         </div>
 
     </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
 
     <script type="text/javascript" th:inline="javascript">
 
@@ -121,6 +122,13 @@
         });
 
 
+        $(document).on('focus', ".cats", function () {
+            $('.cats').editableSelect({
+                effects: 'slide',
+                duration: 200,
+                appendTo: 'body'
+            });
+        });
 
 
 
@@ -135,6 +143,6 @@
             }
         );
 
-    </script>
 
+    </script>
 </div>

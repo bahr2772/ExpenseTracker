@@ -16,4 +16,6 @@ public class CONSTANTS {
     public static final String GET_ALL_BY_PROP = "SELECT * FROM webContent WHERE property =?";
     public static final String UPDATE_WEBCONTENT = "INSERT INTO webContent (property, value) VALUES (?,?)";
 
+    public static final String CATEGORY = "category";
+
 }

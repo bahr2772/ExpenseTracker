@@ -57,7 +57,7 @@
                     <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/></td>
                     <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
                     <td>
-                        <select  name="category" style="display: inherit;" class="form-control cats" th:field="*{expenses[__${stat.index}__].category}">
+                        <select  name="category" id="category" style="display: inherit;" class="form-control cats" th:field="*{expenses[__${stat.index}__].category}">
                             <option value="">Select Category</option>
                             <th:block th:each="cat, iterationStatus : ${cats}" th:inline="text">
                                 <option th:value="${cat.value}">[[${cat.value}]]</option>
@@ -97,51 +97,16 @@
 
     <script type="text/javascript" th:inline="javascript">
 
-        var availableTags = /*[[${merchNames}]]*/ ['one_to_test', 'two_to_test'];
-        var availableItems = /*[[${itemList}]]*/ ['one_to_test', 'two_to_test'];
-        var availableCats = /*[[${cats}]]*/ ['one_to_test', 'two_to_test'];
-
-        $(document).ready(function () {
-
-            $("#merchantName").on('focus', 'input', function () {
-                $("#merchantName").autocomplete({
-                    source: availableTags
+        $(document).on('change', "#category", function () {
+            if($(this).val() == 'Other'){
+                $('#category').editableSelect({
+                    effects: 'slide',
+                    duration: 200,
+                    appendTo: 'body'
                 });
-            });
-
-            $(document).on('focus', "#items", function () {
-                $("#items").autocomplete({
-                    source: availableItems
-                });
-            });
-            $(document).on('focus', "#cats", function () {
-                $("#cats").autocomplete({
-                    source: availableCats
-                });
-            });
-        });
-
-
-        $(document).on('focus', ".cats", function () {
-            $('.cats').editableSelect({
-                effects: 'slide',
-                duration: 200,
-                appendTo: 'body'
-            });
-        });
-
-
-
-        $('.dropdown-button').dropdown({
-                inDuration: 300,
-                outDuration: 225,
-                constrain_width: false, // Does not change width of dropdown to that of the activator
-                hover: true, // Activate on hover
-                gutter: 0, // Spacing from edge
-                belowOrigin: false, // Displays dropdown below the button
-                alignment: 'left' // Displays dropdown with edge aligned to the left of button
             }
-        );
+        });
+
 
 
     </script>

@@ -127,17 +127,9 @@ public class ExpenseController {
             merchNames.add(expense.getMerchantName());
             items.add(expense.getItem());
             total = total.add(expense.getAmount());
-            if (tmpCat.contains(Helper.rNull(expense.getCategory())))
-                System.out.println("TRUE");
-            else
+            if (!tmpCat.contains(Helper.rNull(expense.getCategory())))
                 websiteContent.saveContent(CONSTANTS.CATEGORY, Helper.rNull(expense.getCategory()));
         }
-
-
-
-
-
-
          cats = websiteContent.getContentByProp("category");
 
 

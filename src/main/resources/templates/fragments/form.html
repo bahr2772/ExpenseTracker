@@ -57,7 +57,7 @@
                     <td><input type="text" id="items" th:field="*{expenses[__${stat.index}__].item}"/></td>
                     <td><input type="text" th:field="*{expenses[__${stat.index}__].description}"/></td>
                     <td>
-                        <select  name="category" id="category" style="display: inherit;" class="form-control cats" th:field="*{expenses[__${stat.index}__].category}">
+                        <select  name="category" th:id="*{expenses[__${stat.index}__].id}" style="display: inherit;" class="form-control cats" th:field="*{expenses[__${stat.index}__].category}">
                             <option value="">Select Category</option>
                             <th:block th:each="cat, iterationStatus : ${cats}" th:inline="text">
                                 <option th:value="${cat.value}">[[${cat.value}]]</option>
@@ -73,6 +73,23 @@
                         </button>
                     </td>
                 </tr>
+
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+
+                    var catInput = "#[[*{expenses[__${stat.index}__].id}]] " ;
+
+                    $(document).on('change', "select", function () {
+                        if($(this).val() == 'Other'){
+                            $(catInput).editableSelect({
+                                effects: 'slide',
+                                duration: 200,
+                                appendTo: 'body'
+                            });
+                        }
+                    });
+                    /*]]>*/
+                </script>
             </th:block>
             </tbody>
         </table>
@@ -95,19 +112,19 @@
     </form>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
 
-    <script type="text/javascript" th:inline="javascript">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-        $(document).on('change', "#category", function () {
+
+        $(document).on('change', "select", function () {
             if($(this).val() == 'Other'){
-                $('#category').editableSelect({
+                $('select').editableSelect({
                     effects: 'slide',
                     duration: 200,
                     appendTo: 'body'
                 });
             }
         });
-
-
-
+        /*]]>*/
     </script>
 </div>

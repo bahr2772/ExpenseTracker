@@ -2,6 +2,7 @@ package com.yknotplanning.Helper;
 
 import com.yknotplanning.Model.CONSTANTS;
 import com.yknotplanning.Model.Expense;
+import com.yknotplanning.Model.Report;
 import com.yknotplanning.Model.Webcontent;
 import com.yknotplanning.Repo.ExpenseRepo;
 import com.yknotplanning.Repo.WebsiteContent;
@@ -27,7 +28,10 @@ public class GetReport {
     @Autowired
     private WebsiteContent websiteContent;
 
+
     public void getReport(Model model) {
+
+        Report report;
 
         List<Object> reportList = new ArrayList<>();
 
@@ -36,29 +40,32 @@ public class GetReport {
 
         ArrayList<Object> category = new ArrayList<>();
 
-        for (Webcontent webcontent : catList) {
+        /*for (Webcontent webcontent : catList) {
             category.add(webcontent.getValue());
             category.add(category);
         }
-
+*/
+        BigDecimal yearTotal = new BigDecimal(0.00);
 
         for (int i = 0; i < catList.size(); i++) {
-            List<Object> report = new ArrayList<>();
-            report.add(catList.get(i).getValue());
-            BigDecimal total = BigDecimal.ZERO;
-            for (int j = 0; j < expenseList.size(); j++) {
-                if (catList.get(i).getValue().equals(expenseList.get(j).getCategory()))
-                    total = total.add(expenseList.get(j).getAmount());
-                //report.add(expenseList.get(j).getAmount());
+            report = new Report();
+
+            if (!catList.get(i).getValue().equals("")) {
+                BigDecimal total = BigDecimal.ZERO;
+                for (int j = 0; j < expenseList.size(); j++) {
+                    if (catList.get(i).getValue().equals(expenseList.get(j).getCategory()))
+                        total = total.add(expenseList.get(j).getAmount());
+                }
+
+                yearTotal = yearTotal.add(total);
+                report.setHeader(catList.get(i).getValue());
+                report.setTotal(total);
+                reportList.add(report);
             }
-            report.add(total);
-            reportList.add(report);
         }
 
-        for (Object obj : reportList) {
-            System.out.println(obj);
-        }
-
+        model.addAttribute("report", reportList);
+        model.addAttribute("yearTotal", yearTotal);
 
     }
 

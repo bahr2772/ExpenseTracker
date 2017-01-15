@@ -11,6 +11,10 @@
         margin-bottom: 18px;
     }
 </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+
+
     <div th:if="${orderBy == null}" th:with="orderBy = ${id}"/>
     <form id="expense_form"
           th:method="post"
@@ -101,6 +105,10 @@
         <button class="center-align col s6 offset-s6 btn waves-effect  red lighten-2 waves-light mdi-content-checkmark"
                 type="submit"
                 name="saveList">Save Expenses
+        </button>
+        <button class="center-align col s6 offset-s6 btn waves-effect  red lighten-2 waves-light mdi-content-checkmark"
+                type="submit"
+                name="nextMonth">Next Month
         </button>
 
         <div th:attr="class=${total &lt; 0 ?

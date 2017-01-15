@@ -33,6 +33,23 @@ public class ExpenseController {
     private WebsiteContent websiteContent;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @RequestMapping(value = "expenses", params = "nextMonth")
+    public String getNextMonth(final Model model, HttpServletRequest request, String month){
+        int tmpMonth = Integer.parseInt(month)+1;
+
+        if (tmpMonth < 10)
+             month = "0" +tmpMonth;
+        else if (tmpMonth == 13)
+            month = "01";
+        else
+            month = "" + tmpMonth;
+        String orderBy = null;
+        getExpensesList(model, request, month,orderBy);
+        return "record";
+    }
+
+
+
     @RequestMapping(value = "expenses", method = RequestMethod.GET)
     public String getExpensesList(final Model model, HttpServletRequest request, String month, String orderBy) {
 
@@ -59,7 +76,7 @@ public class ExpenseController {
         String[] args = {month,orderBy};
         expenseRepo.create();
         Expense expense = new Expense();
-            expense.setCategory("");
+            expense.setCategory("Select Category");
             expense.setDate(month + "/01/" + year);
             expense.setAmount(new BigDecimal(0.00));
 

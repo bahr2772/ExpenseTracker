@@ -9,8 +9,25 @@
 <div class="container">
     <div th:include="fragments/header :: nav"/>
 
+    <table id="reportTable" class="striped centered">
+        <thead>
+        <th>Category</th>
+        <th>Amount</th>
+        </thead>
+        <tbody>
+        <th:block th:each="report, stat : ${report}">
+            <tr>
+                <td th:text="${report.header}"/>
+                <td>$ <span th:text="${#numbers.formatDecimal(report.total, 0, 'COMMA', 2, 'POINT')}">10.00</span></td>
+            </tr>
+        </th:block>
+        <tr>
+            <td>YEAR TOTAL</td>
+            <td   th:text="${#numbers.formatDecimal(yearTotal, 0, 'COMMA', 2, 'POINT')}">00.00</td>
+        </tr>
+        </tbody>
+    </table>
 
-    REPORT PAGE
 
 
 </div>

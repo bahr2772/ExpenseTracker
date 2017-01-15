@@ -13,7 +13,7 @@ public class CONSTANTS {
     public static final String REMOVE_EXPENSE = "DELETE FROM expense WHERE id=?";
 
     public static final String GET_ALL_WEBCONTENT = "SELECT * FROM webContent";
-    public static final String GET_ALL_BY_PROP = "SELECT * FROM webContent WHERE property =?";
+    public static final String GET_ALL_BY_PROP = "SELECT * FROM webContent WHERE property =? ORDER BY value";
     public static final String UPDATE_WEBCONTENT = "INSERT INTO webContent (property, value) VALUES (?,?)";
 
     public static final String CATEGORY = "category";
